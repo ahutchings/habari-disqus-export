@@ -68,45 +68,41 @@ class DisqusExport extends Plugin
         $user_api_key  = Options::get('disqus__user_api_key');
         $forum_api_key = Options::get('disqus__forum_api_key');
 
-        try {
-            $disqus = new DisqusAPI($user_api_key, $forum_api_key);
+        $disqus = new DisqusAPI($user_api_key, $forum_api_key);
 
-            foreach (Posts::get(array('content_type' => 'entry', 'nolimit' => TRUE)) as $post)
+        foreach (Posts::get(array('content_type' => 'entry', 'nolimit' => TRUE)) as $post)
+        {
+            // retrieve or create the current thread
+            $thread = $disqus->thread_by_identifier($post->id, $post->title)->thread;
+
+            foreach ($post->comments as $comment)
             {
-                // retrieve or create the current thread
-                $thread = $disqus->thread_by_identifier($post->id, $post->title)->thread;
+            	// @todo filter trackbacks/pingbacks?
 
-                foreach ($post->comments as $comment)
-                {
-                	// @todo filter trackbacks/pingbacks?
+                // format params
+                $params = array(
+                    'created_at' => $comment->date->format('Y-m-d\TH:i'),
+                    'ip_address' => $comment->ip,
+                    'author_url' => $comment->url,
+                );
 
-                    // format params
-                    $params = array(
-                        'created_at' => $comment->date->format('Y-m-d\TH:i'),
-                        'ip_address' => $comment->ip,
-                        'author_url' => $comment->url,
-                    );
+				switch ($comment->status) {
+					case Comment::STATUS_UNAPPROVED:
+						$params['state'] = 'unapproved';
+						break;
+					case Comment::STATUS_APPROVED:
+						$params['state'] = 'approved';
+						break;
+					case Comment::STATUS_SPAM:
+						$params['state'] = 'spam';
+						break;
+					case Comment::STATUS_DELETED:
+						$params['state'] = 'killed';
+				}
 
-					switch ($comment->status) {
-						case Comment::STATUS_UNAPPROVED:
-							$params['state'] = 'unapproved';
-							break;
-						case Comment::STATUS_APPROVED:
-							$params['state'] = 'approved';
-							break;
-						case Comment::STATUS_SPAM:
-							$params['state'] = 'spam';
-							break;
-						case Comment::STATUS_DELETED:
-							$params['state'] = 'killed';
-					}
-
-                    // create post
-                    $comment = $disqus->create_post($thread->id, $comment->content, $comment->name, $comment->email, $params);
-                }
+                // create post
+                $comment = $disqus->create_post($thread->id, $comment->content, $comment->name, $comment->email, $params);
             }
-        } catch (DisqusException $e) {
-            Session::error($e->getMessage());
         }
     }
 }
