@@ -6,4 +6,9 @@
 	<author url="http://www.andrewhutchings.com/">Andrew Hutchings</author>
 	<version>0.2</version>
 	<description>Exports Habari comments to Disqus.</description>
+	<help>
+		<value>
+			<![CDATA[You can find your Disqus API keys at <a href="http://disqus.com/api/keys/">http://disqus.com/api/keys/</a>.]]>
+		</value>
+	</help>
 </pluggable>
