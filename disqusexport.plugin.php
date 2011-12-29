@@ -2,24 +2,6 @@
 
 class DisqusExport extends Plugin
 {
-    const VERSION = '0.1';
-
-    /**
-     * Provide plugin info to the system.
-     */
-    public function info()
-    {
-        return array(
-            'name'        => 'Disqus Export',
-            'version'     => self::VERSION,
-            'url'         => 'http://github.com/ahutchings/habari-disqus-export',
-            'author'      => 'Andrew Hutchings',
-            'authorurl'   => 'http://www.andrewhutchings.com/',
-            'license'     => 'Apache License 2.0',
-            'description' => 'Exports Habari comments to Disqus.'
-        );
-    }
-
     /**
      * Executes when the admin plugins page wants to know if plugins have configuration links to display.
      *

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pluggable type="plugin">
+	<name>Disqus Export</name>
+	<license url="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License 2.0</license>
+	<url>http://github.com/ahutchings/habari-disqus-export</url>
+	<author url="http://www.andrewhutchings.com/">Andrew Hutchings</author>
+	<version>0.2</version>
+	<description>Exports Habari comments to Disqus.</description>
+</pluggable>
