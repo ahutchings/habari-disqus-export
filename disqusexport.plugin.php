@@ -43,12 +43,24 @@ class DisqusExport extends Plugin
 		}
 	}
 
+	private function display_message($message)
+	{
+		$message = _t($message);
+		EventLog::log($message);
+		Session::error($message);
+	}
+
 	private function export_comments()
 	{
 		require_once 'vendor/disqus/disqus/disqus.php';
 
 		$user_api_key  = Options::get('disqus__user_api_key');
 		$forum_api_key = Options::get('disqus__forum_api_key');
+
+		if ( ! $user_api_key || ! $forum_api_key)
+		{
+			return $this->display_message('Please configure the Disqus Export plugin before exporting comments.');
+		}
 
 		$disqus = new DisqusAPI($user_api_key, $forum_api_key);
 
